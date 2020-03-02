@@ -6,7 +6,7 @@ import {StyleSheet} from 'react-native';
 import LoginScreen from './screen/LoginSignup/loginScreen';
 import MapScreen from './screen/menu/mapScreen';
 //import signupScreen from './screen/LoginSignup/signupScreen';
-//import LoginFormScreen from './screen/LoginSignup/loginFormScreen';
+import detailScreen from './screen/menu/detailScreen';
 
 //import HomeScreen from './screen/Menu/AppMenu';
 
@@ -27,13 +27,13 @@ const AppRouter = () => (
         initial
         hideNavBar={true}
       />
-      {/* <Scene
-        key="LoginForm"
-        component={LoginFormScreen}
-        title="SignUp"
+       <Scene
+        key="detailScreen"
+        component={detailScreen}
+        title="detailScreen"
         hideNavBar={true}
       />
-
+{/*
       <Scene
         key="HomeScreen"
         component={HomeScreen}

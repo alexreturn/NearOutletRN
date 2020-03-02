@@ -4,6 +4,7 @@ import {
   View,
   Text,
   Dimensions,
+  Image,
   Alert,
   TouchableOpacity,
   TextInput,
@@ -12,7 +13,7 @@ import {
   UIManager,
   FlatList,
 } from 'react-native';
-
+import Autocomplete from 'react-native-autocomplete-input';
 import {ListItem} from 'react-native-elements';
 import axios from 'axios';
 import MapView, {Marker, ProviderPropType} from 'react-native-maps';
@@ -35,6 +36,8 @@ export default class FindDriverScreen extends Component<props> {
       latuser: 0,
       lotuser: 0,
       categories: [],
+      films: [],
+      query: '',
     };
   }
 
@@ -58,14 +61,14 @@ export default class FindDriverScreen extends Component<props> {
         axios
           .get(
             'http://10.67.98.238/apioutlet/get_all.php?latitudeUser=' +
-              this.state.latuser +
+              latuser +
               '&longitudeUser=' +
-              this.state.lotuser +
+              lotuser +
               '&zoom=1',
           )
           .then(res => {
             const categories = res.data;
-            console.log(categories);
+            //console.log(categories);
             this.setState({categories});
           });
       })
@@ -77,22 +80,11 @@ export default class FindDriverScreen extends Component<props> {
   render() {
     return (
       <View style={styles.container}>
-        <View style={styles.header} />
-        {/* <MapView
-          style={styles.map}>
-          <MapView.Marker
-            coordinate={{
-              latitude: parseFloat(this.state.latuser),
-              longitude: parseFloat(this.state.lotuser),
-            }}
-          />
-        </MapView> */}
-
         <ClusterMap
           style={styles.map}
           showsUserLocation={true}
           showsMyLocationButton={true}
-          userLocationPriority='high'
+          userLocationPriority="high"
           region={{
             latitude: -8.6836902,
             longitude: 115.2237984,
@@ -106,14 +98,38 @@ export default class FindDriverScreen extends Component<props> {
                 latitude: parseFloat(mape.latitude),
                 longitude: parseFloat(mape.longitude),
               }}
-              title={mape.nama_outlet}
-            />
+              // onPress={() => Actions.detailScreen()}
+              // title={mape.nama_outlet}
+              // description={mape.distance_KM}
+              >
+              <View style={styles.markersnya}>
+                <Text>{mape.nama_outlet}</Text>
+                <Text>{mape.distance_KM} KM</Text>
+              </View>
+              {mape.klasifikasi == 'BRONZE' ? (
+                <Image source={require('../../image/place_24px_bronze.png')} />
+              ) : mape.klasifikasi == 'BRONZE' ? (
+                <Image
+                  source={require('../../image/place_24px_platinum.png')}
+                />
+              ) : mape.klasifikasi == 'BRONZE' ? (
+                <Image source={require('../../image/place_24px_silver.png')} />
+              ) : (
+                <Image source={require('../../image/place_24px.png')} />
+              )}
+            </Marker>
           ))}
         </ClusterMap>
         <Text style={styles.txtHeader}>
           {' '}
           {this.state.lotuser} Kategori Budaya {this.state.latuser}{' '}
         </Text>
+        <Autocomplete
+          autoCapitalize="none"
+          autoCorrect={false}
+          data={this.state.films}
+          placeholder="Find Outlet"
+        />
       </View>
     );
   }
@@ -124,11 +140,16 @@ FindDriverScreen.propTypes = {
 };
 const styles = StyleSheet.create({
   container: {
-    marginTop: 20,
     flex: 1,
   },
   map: {
     ...StyleSheet.absoluteFillObject,
+  },
+  markersnya: {
+    backgroundColor: 'rgba(255,255,255,0.8)',
+    paddingHorizontal: 10,
+    paddingVertical: 5,
+    borderRadius: 10,
   },
   bubble: {
     backgroundColor: 'rgba(255,255,255,0.7)',
@@ -139,6 +160,14 @@ const styles = StyleSheet.create({
   latlng: {
     width: 200,
     alignItems: 'stretch',
+  },
+  autocompleteContainer: {
+    flex: 1,
+    left: 15,
+    position: 'absolute',
+    right: 15,
+    top: 20,
+    zIndex: 1,
   },
   button: {
     width: 80,
