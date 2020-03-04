@@ -12,6 +12,9 @@ import {
   Platform,
   UIManager,
   FlatList,
+  SafeAreaView,
+  StatusBar,
+  Picker,AsyncStorage
 } from 'react-native';
 import Autocomplete from 'react-native-autocomplete-input';
 import {ListItem} from 'react-native-elements';
@@ -19,6 +22,8 @@ import axios from 'axios';
 import MapView, {Marker, ProviderPropType} from 'react-native-maps';
 import GetLocation from 'react-native-get-location';
 import {ClusterMap} from 'react-native-cluster-map';
+import RNPickerSelect from 'react-native-picker-select';
+import {Actions} from 'react-native-router-flux'; // New code
 
 const {width, height} = Dimensions.get('window');
 
@@ -27,10 +32,10 @@ const LATITUDE = -8.6836902;
 const LONGITUDE = 115.2237984;
 const LATITUDE_DELTA = 0.0922;
 const LONGITUDE_DELTA = LATITUDE_DELTA * ASPECT_RATIO;
-import {Actions} from 'react-native-router-flux'; // New code
 
 export default class FindDriverScreen extends Component<props> {
   constructor(props) {
+    console.disableYellowBox = true;
     super(props);
     this.state = {
       latuser: 0,
@@ -38,10 +43,18 @@ export default class FindDriverScreen extends Component<props> {
       categories: [],
       films: [],
       query: '',
+      namaOutlet: '',
+      idOutlet: '',
+      klasOutlet: '',
+      isHidden: true,
+      pickervalue: 'All',
+      statusklik: false,
     };
   }
 
   componentDidMount() {
+    this.setState({categories: []});
+
     GetLocation.getCurrentPosition({
       enableHighAccuracy: true,
       timeout: 15000,
@@ -64,11 +77,13 @@ export default class FindDriverScreen extends Component<props> {
               latuser +
               '&longitudeUser=' +
               lotuser +
-              '&zoom=1',
+              '&zoom=1' +
+              '&klasifikasi=' +
+              this.state.pickervalue,
           )
           .then(res => {
             const categories = res.data;
-            //console.log(categories);
+            console.log(categories.length + this.state.pickervalue);
             this.setState({categories});
           });
       })
@@ -76,7 +91,7 @@ export default class FindDriverScreen extends Component<props> {
         const {code, message} = error;
       });
   }
-
+  
   render() {
     return (
       <View style={styles.container}>
@@ -98,21 +113,26 @@ export default class FindDriverScreen extends Component<props> {
                 latitude: parseFloat(mape.latitude),
                 longitude: parseFloat(mape.longitude),
               }}
-              // onPress={() => Actions.detailScreen()}
-              // title={mape.nama_outlet}
-              // description={mape.distance_KM}
-              >
+              onPress={() => {
+                this.setState({namaOutlet: mape.nama_outlet}),
+                  this.setState({idOutlet: mape.id_outlet_digipos}),
+                  this.setState({klasOutlet: mape.klasifikasi}),
+                  AsyncStorage.setItem('idOutlet', mape.id_outlet_digipos);
+                  this.setState({statusklik: true});
+              }}
+              title={mape.nama_outlet}
+              description={mape.distance_KM}>
               <View style={styles.markersnya}>
                 <Text>{mape.nama_outlet}</Text>
                 <Text>{mape.distance_KM} KM</Text>
               </View>
               {mape.klasifikasi == 'BRONZE' ? (
                 <Image source={require('../../image/place_24px_bronze.png')} />
-              ) : mape.klasifikasi == 'BRONZE' ? (
+              ) : mape.klasifikasi == 'PLATINUM' ? (
                 <Image
                   source={require('../../image/place_24px_platinum.png')}
                 />
-              ) : mape.klasifikasi == 'BRONZE' ? (
+              ) : mape.klasifikasi == 'SILVER' ? (
                 <Image source={require('../../image/place_24px_silver.png')} />
               ) : (
                 <Image source={require('../../image/place_24px.png')} />
@@ -120,16 +140,60 @@ export default class FindDriverScreen extends Component<props> {
             </Marker>
           ))}
         </ClusterMap>
-        <Text style={styles.txtHeader}>
-          {' '}
-          {this.state.lotuser} Kategori Budaya {this.state.latuser}{' '}
-        </Text>
-        <Autocomplete
-          autoCapitalize="none"
-          autoCorrect={false}
-          data={this.state.films}
-          placeholder="Find Outlet"
-        />
+
+        <View style={styles.KotakAtas}>
+          <Autocomplete
+            containerStyle={styles.autocompleteContainer}
+            autoCapitalize="none"
+            autoCorrect={false}
+            placeholder="Find Outlet"
+          />
+          <RNPickerSelect
+            onValueChange={pickervalue => this.setState({pickervalue})}
+            onDonePress={this.handleChange}
+            placeholder={{
+              label: 'All Classification',
+              value: 'All',
+              color: 'red',
+            }}
+            items={[
+              {label: 'PLATINUM', value: 'PLATINUM'},
+              {label: 'SILVER', value: 'SILVER'},
+              {label: 'BRONZE', value: 'BRONZE'},
+            ]}
+          />
+        </View>
+        {this.state.statusklik == true ? (
+          <View style={styles.Kotakbawah}>
+            <View style={styles.flexRow}>
+              <Text style={{fontSize: 10, color: '#000000'}}>Nama Outlet </Text>
+              <TouchableOpacity
+                onPress={() => this.setState({statusklik: false})}>
+                <Text style={{fontSize: 12, color: '#000000'}}>(X) Close</Text>
+              </TouchableOpacity>
+            </View>
+            <Text style={{fontSize: 30, color: '#000000'}}>
+              {this.state.namaOutlet}
+            </Text>
+            <View style={{height: 3, backgroundColor: '#f1f1f1'}} />
+
+            <View style={styles.input}>
+              <TouchableOpacity
+                style={styles.btnDetail}
+                onPress={() =>
+                  Actions.tabbar({
+                    paramNama: this.state.namaOutlet,
+                    paramId: this.state.idOutlet,
+                    hideNavBar: false,
+                  })
+                }>
+                <Text style={styles.text}>Detail Outlet</Text>
+              </TouchableOpacity>
+            </View>
+          </View>
+        ) : (
+          <Text />
+        )}
       </View>
     );
   }
@@ -144,6 +208,12 @@ const styles = StyleSheet.create({
   },
   map: {
     ...StyleSheet.absoluteFillObject,
+  },
+  flexRow: {
+    flex: 1,
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignContent: 'space-between',
   },
   markersnya: {
     backgroundColor: 'rgba(255,255,255,0.8)',
@@ -161,13 +231,23 @@ const styles = StyleSheet.create({
     width: 200,
     alignItems: 'stretch',
   },
+  PickerStyle: {
+    backgroundColor: 'transparent',
+    borderTopWidth: 10,
+    borderTopColor: 'gray',
+    borderRightWidth: 10,
+    borderRightColor: 'transparent',
+    borderLeftWidth: 10,
+    borderLeftColor: 'transparent',
+    width: 0,
+    height: 0,
+  },
+  txtHeader: {
+    height: 33,
+  },
   autocompleteContainer: {
-    flex: 1,
-    left: 15,
-    position: 'absolute',
-    right: 15,
-    top: 20,
-    zIndex: 1,
+    borderRadius: 20,
+    borderColor: '#f1f1f1',
   },
   button: {
     width: 80,
@@ -180,11 +260,42 @@ const styles = StyleSheet.create({
     marginVertical: 20,
     backgroundColor: 'transparent',
   },
+  KotakAtas: {
+    width: '90%',
+    height: 120,
+    padding: 10,
+    position: 'absolute', //Here is the trick
+    margin: 20,
+    backgroundColor: '#ffffff',
+    borderColor: '#f1f1f1',
+    borderWidth: 2,
+    borderRadius: 20,
+  },
   Kotakbawah: {
     width: '90%',
+    height: 120,
+    backgroundColor: '#ffffff',
     padding: 10,
-    margin: 10,
-    borderRadius: 3,
+    position: 'absolute', //Here is the trick
+    bottom: 0, //Here is the trick
+    margin: 20,
+    borderColor: '#f1f1f1',
+    borderWidth: 2,
+    borderRadius: 20,
+  },
+
+  input: {
+    width: '100%',
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+  btnDetail: {
+    width: 325,
+    height: 38,
+    alignItems: 'center',
+    justifyContent: 'center',
+    backgroundColor: '#64AB23',
+    borderRadius: 6,
   },
   KotakTitle: {
     backgroundColor: '#64AB23',
@@ -207,5 +318,31 @@ const styles = StyleSheet.create({
   contentbawah: {
     height: '10%',
     borderBottomWidth: 0.2,
+  },
+  text: {
+    color: '#ffffff',
+  },
+});
+
+const pickerSelectStyles = StyleSheet.create({
+  inputIOS: {
+    fontSize: 16,
+    paddingVertical: 12,
+    paddingHorizontal: 10,
+    borderWidth: 1,
+    borderColor: 'gray',
+    borderRadius: 4,
+    color: 'black',
+    paddingRight: 30, // to ensure the text is never behind the icon
+  },
+  inputAndroid: {
+    fontSize: 16,
+    paddingHorizontal: 10,
+    paddingVertical: 8,
+    borderWidth: 0.5,
+    borderColor: 'purple',
+    borderRadius: 8,
+    color: 'black',
+    paddingRight: 30, // to ensure the text is never behind the icon
   },
 });

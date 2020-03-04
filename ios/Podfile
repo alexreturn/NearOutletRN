@@ -2,6 +2,10 @@ platform :ios, '9.0'
 require_relative '../node_modules/@react-native-community/cli-platform-ios/native_modules'
 
 target 'NearOutlet' do
+
+  rn_path = '../../node_modules/react-native' # This path is likely to be `../node_modules/react-native` in your own project.
+  rn_maps_path = '../../' # This path is likely to be `../node_modules/react-native-maps` in your own project.
+
   # Pods for NearOutlet
   pod 'FBLazyVector', :path => "../node_modules/react-native/Libraries/FBLazyVector"
   pod 'FBReactNativeSpec', :path => "../node_modules/react-native/Libraries/FBReactNativeSpec"
@@ -33,7 +37,12 @@ target 'NearOutlet' do
   pod 'DoubleConversion', :podspec => '../node_modules/react-native/third-party-podspecs/DoubleConversion.podspec'
   pod 'glog', :podspec => '../node_modules/react-native/third-party-podspecs/glog.podspec'
   pod 'Folly', :podspec => '../node_modules/react-native/third-party-podspecs/Folly.podspec'
-
+ # react-native-maps dependencies
+ pod 'GoogleMaps'  # Remove this line if you don't want to support GoogleMaps on iOS
+ pod 'react-native-maps', path: '../node_modules/react-native-maps'
+ pod 'react-native-google-maps', path: '../node_modules/react-native-maps'  # If you need GoogleMaps support on iOS
+ pod 'Google-Maps-iOS-Utils' # Remove this line if you don't want to support GoogleMaps on iOS
+ 
   target 'NearOutletTests' do
     inherit! :search_paths
     # Pods for testing

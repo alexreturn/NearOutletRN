@@ -1,16 +1,22 @@
 import React from 'react';
-import {Drawer, Router, Scene} from 'react-native-router-flux';
+import {Drawer, Router, Scene, Tabs} from 'react-native-router-flux';
 
-import {StyleSheet} from 'react-native';
+import {StyleSheet, Text} from 'react-native';
 
 import LoginScreen from './screen/LoginSignup/loginScreen';
 import MapScreen from './screen/menu/mapScreen';
 //import signupScreen from './screen/LoginSignup/signupScreen';
-import detailScreen from './screen/menu/detailScreen';
+import detailScreen from './screen/menu/detail/Detail';
 
-//import HomeScreen from './screen/Menu/AppMenu';
+import DetailScreen from './screen/menu/detail/Detail';
+
+import RechScreen from './screen/menu/detail/Rech';
 
 //import SplashScreen from './screen/LoginSignup/splashScreen';
+
+const TabIcon = ({selected, title}) => {
+  return <Text style={{color: selected ? 'red' : 'black'}}>{title}</Text>;
+};
 
 const AppRouter = () => (
   <Router
@@ -21,41 +27,67 @@ const AppRouter = () => (
     tintColor="#ffffff">
     <Scene key="root">
       <Scene
-        key="Login"
+        key="Maps"
         component={MapScreen}
-        title="Login"
+        title="NeRo - Nearby Outlet"
         initial
-        hideNavBar={true}
+        hideNavBar={false}
       />
-       <Scene
-        key="detailScreen"
-        component={detailScreen}
-        title="detailScreen"
-        hideNavBar={true}
-      />
-{/*
       <Scene
-        key="HomeScreen"
-        component={HomeScreen}
-        title="HomeScreen"
-        hideNavBar={true}
-      /> */}
-      {/* <Scene key="SignUp" component={signupScreen} title="SignUp" /> */}
+        key="DetailScreen"
+        component={DetailScreen}
+        title="Detail Outlet"
+        hideNavBar={false}
+      />
+      <Scene tabBarPosition="top" key="tabbar" tabs tabBarStyle={styles.tabBar}>
+        <Scene key="Detail" title="Detail" icon={TabIcon}>
+          <Scene
+            key="DetailScreen1"
+            component={DetailScreen}
+            hideNavBar={true}
+          />
+        </Scene>
+        <Scene key="Detail1" title="Detail1" icon={TabIcon}>
+          <Scene
+            key="DetailScreen2"
+            component={DetailScreen}
+            hideNavBar={true}
+          />
+        </Scene>
+        <Scene key="Detail2" title="Detail2" icon={TabIcon}>
+          <Scene
+            key="DetailScreen3"
+            component={DetailScreen}
+            hideNavBar={true}
+          />
+        </Scene>
+        <Scene key="Recass" title="Recass" icon={TabIcon}>
+          <Scene key="RechScreen" component={RechScreen} hideNavBar={true} />
+        </Scene>
+      </Scene>
     </Scene>
   </Router>
 );
 const styles = StyleSheet.create({
   navBar: {
-    backgroundColor: '#2D3C4D',
+    backgroundColor: '#B90606',
   },
   navBarTitle: {
-    color: '#FFFFFF',
+    color: '#ffffff',
   },
   barButtonTextStyle: {
-    color: '#FFFFFF',
+    color: '#000000',
   },
   barButtonIconStyle: {
-    tintColor: 'rgb(255,255,255)',
+    tintColor: 'rgb(0,0,255)',
+  },
+  tabBar: {
+    height: 50,
+    borderTopColor: '#B90606',
+    borderTopWidth: 1,
+    backgroundColor: '#B90606',
+    opacity: 0.98,
+    justifyContent: 'space-between',
   },
 });
 
