@@ -12,6 +12,7 @@ import {
   ScrollView,
 } from 'react-native';
 
+import {requestMultiple, PERMISSIONS} from 'react-native-permissions';
 import {Actions} from 'react-native-router-flux'; // New code
 export default class loginScreen extends Component {
   constructor(props) {
@@ -19,7 +20,14 @@ export default class loginScreen extends Component {
 
     this.state = {};
   }
+  componentDidMount() {
 
+    requestMultiple([PERMISSIONS.IOS.LOCATION_ALWAYS,PERMISSIONS.IOS.LOCATION_WHEN_IN_USE, 
+      PERMISSIONS.ANDROID.ACCESS_FINE_LOCATION,PERMISSIONS.ANDROID.ACCESS_COARSE_LOCATION]).then(
+      (statuses) => {
+      },
+    );
+  }
   render() {
     return (
       <View style={styles.container}>
@@ -31,7 +39,7 @@ export default class loginScreen extends Component {
               marginTop: 30,
               marginBottom: 40,
             }}>
-            SmartVillage
+            NeRo
           </Text>
           <View style={{flexDirection: 'row'}}>
             <TextInput
@@ -54,16 +62,15 @@ export default class loginScreen extends Component {
             <View style={{flexDirection: 'row'}}>
               <TouchableOpacity
                 style={styles.btnlogin}
-                onPress={() => Actions.HomeScreen()}>
+                onPress={() => Actions.Maps()}>
                 <Text style={styles.text}>MASUK</Text>
               </TouchableOpacity>
             </View>
           </View>
 
-          <Text>Lupa Password?</Text>
+         
         </View>
         <View style={styles.bawah}>
-          <Text>Belum Punya Akun? Daftar disini</Text>
         </View>
       </View>
     );

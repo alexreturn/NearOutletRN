@@ -63,24 +63,108 @@ export default class loginScreen extends Component<props> {
       <View style={styles.container}>
         {detailOutlet.map(item => (
           <View>
-            <Text>Nama Outlet : {item.nama_outlet}</Text>
-            <Text>Tanggal Register : {item.tgl_register}</Text>
-            <Text>MSISDN Outlet : {item.msisdn_konfirmasi}</Text>
-            <Text>Kategori : {item.kategori}</Text>
-            <Text>Tipe Outlet : {item.tipe_outlet}</Text>
-            <Text>Tipe Lokasi : {item.tipe_lokasi}</Text>
-            <Text>Jadwal Kunjungan : {item.jadwal_kunjungan}</Text>
-            <Text>Terakhir Kunjungan: {item.tgl_terakhir_kunjungan}</Text>
-            <Text>Tgl Terakhir Sales : {item.tgl_terakhir_sales}</Text>
-            <Text>
-              Jumlah Trx Sales Perdana : {item.jumlah_trx_sales_perdana}
-            </Text>
-            <Text>SF code :{item.sf_code}</Text>
-            <Text>Jumlah RS :{item.jumlah_rs}</Text>
+            <View style={styles.barnya}>
+              <View style={styles.leftContainer}>
+                <Text>Nama Outlet </Text>
+              </View>
+              <View style={styles.rightContainer}>
+                <Text>: {item.nama_outlet}</Text>
+              </View>
+            </View>
+
+            <View style={styles.barnya}>
+              <View style={styles.leftContainer}>
+                <Text>Tanggal Register </Text>
+              </View>
+              <View style={styles.rightContainer}>
+                <Text>: {item.tgl_register}</Text>
+              </View>
+            </View>
+            <View style={styles.barnya}>
+              <View style={styles.leftContainer}>
+                <Text>MSISDN Outlet </Text>
+              </View>
+              <View style={styles.rightContainer}>
+                <Text>: {item.msisdn_konfirmasi}</Text>
+              </View>
+            </View>
+
+            <View style={styles.barnya}>
+              <View style={styles.leftContainer}>
+                <Text>Kategori </Text>
+              </View>
+              <View style={styles.rightContainer}>
+                <Text>: {item.kategori}</Text>
+              </View>
+            </View>
+
+            <View style={styles.barnya}>
+              <View style={styles.leftContainer}>
+                <Text>Tipe Outlet </Text>
+              </View>
+              <View style={styles.rightContainer}>
+                <Text>: {item.tipe_outlet}</Text>
+              </View>
+            </View>
+            <View style={styles.barnya}>
+              <View style={styles.leftContainer}>
+                <Text>Tipe Lokasi </Text>
+              </View>
+              <View style={styles.rightContainer}>
+                <Text>: {item.tipe_lokasi}</Text>
+              </View>
+            </View>
+            <View style={styles.barnya}>
+              <View style={styles.leftContainer}>
+                <Text>Jadwal Kunjungan </Text>
+              </View>
+              <View style={styles.rightContainer}>
+                <Text>: {item.jadwal_kunjungan}</Text>
+              </View>
+            </View>
+            <View style={styles.barnya}>
+              <View style={styles.leftContainer}>
+                <Text>Terakhir Kunjungan</Text>
+              </View>
+              <View style={styles.rightContainer}>
+                <Text>: {item.tgl_terakhir_kunjungan}</Text>
+              </View>
+            </View>
+            <View style={styles.barnya}>
+              <View style={styles.leftContainer}>
+                <Text>Tgl Terakhir Sales</Text>
+              </View>
+              <View style={styles.rightContainer}>
+                <Text>: {item.tgl_terakhir_sales}</Text>
+              </View>
+            </View>
+            <View style={styles.barnya}>
+              <View style={styles.leftContainer}>
+                <Text>Jumlah Trx Sales Perdana</Text>
+              </View>
+              <View style={styles.rightContainer}>
+                <Text>: {item.jumlah_trx_sales_perdana}</Text>
+              </View>
+            </View>
+
+            <View style={styles.barnya}>
+              <View style={styles.leftContainer}>
+                <Text>SF code</Text>
+              </View>
+              <View style={styles.rightContainer}>
+                <Text>: {item.sf_code}</Text>
+              </View>
+            </View>
+            <View style={styles.barnya}>
+              <View style={styles.leftContainer}>
+                <Text>Jumlah RS</Text>
+              </View>
+              <View style={styles.rightContainer}>
+                <Text>: {item.jumlah_rs}</Text>
+              </View>
+            </View>
           </View>
         ))}
-        
-       
       </View>
     );
   }
@@ -91,5 +175,18 @@ const styles = StyleSheet.create({
     flex: 1,
     margin: 10,
     padding: 10,
+  },
+  barnya: {
+    height: 40,
+    flexDirection: 'row',
+    alignContent: 'stretch',
+  },
+  leftContainer: {
+    flex: 1,
+    flexDirection: 'row',
+  },
+  rightContainer: {
+    flex: 1,
+    flexDirection: 'row',
   },
 });
